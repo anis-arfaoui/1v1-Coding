@@ -1,0 +1,257 @@
+[
+  {
+    "id": 1,
+    "title": "Sum of Two Numbers",
+    "difficulty": "easy",
+    "timeLimit": 300,
+    "description": "Write a function `solve(a, b)` that takes two numbers and returns their sum.",
+    "example": {
+      "input": "2, 3",
+      "output": "5"
+    },
+    "hints": [
+      "Use the addition operator (+).",
+      "Remember to return the value directly."
+    ],
+    "starterCode": "function solve(a, b) {\n  // Your code here\n  \n}",
+    "tests": [
+      { "input": [2, 3], "output": 5 },
+      { "input": [-1, 1], "output": 0 },
+      { "input": [0, 0], "output": 0 },
+      { "input": [100, 250], "output": 350 },
+      { "input": [-50, -50], "output": -100 }
+    ]
+  },
+  {
+    "id": 2,
+    "title": "Reverse a String",
+    "difficulty": "easy",
+    "timeLimit": 300,
+    "description": "Write a function `solve(str)` that accepts a string and returns the reversed string.",
+    "example": {
+      "input": "\"hello\"",
+      "output": "\"olleh\""
+    },
+    "hints": [
+      "Strings can be converted into arrays using split('').",
+      "Arrays have a .reverse() method, and can be joined back using .join('')."
+    ],
+    "starterCode": "function solve(str) {\n  // Your code here\n  \n}",
+    "tests": [
+      { "input": ["hello"], "output": "olleh" },
+      { "input": ["world"], "output": "dlrow" },
+      { "input": ["a"], "output": "a" },
+      { "input": ["12345"], "output": "54321" },
+      { "input": [""], "output": "" }
+    ]
+  },
+  {
+    "id": 3,
+    "title": "Find Maximum in Array",
+    "difficulty": "easy",
+    "timeLimit": 300,
+    "description": "Write a function `solve(arr)` that returns the largest number in a given array of numbers.",
+    "example": {
+      "input": "[1, 5, 3, 9, 2]",
+      "output": "9"
+    },
+    "hints": [
+      "You can use Math.max with the spread operator (...arr).",
+      "Alternatively, loop through the array tracking the highest value found so far."
+    ],
+    "starterCode": "function solve(arr) {\n  // Your code here\n  \n}",
+    "tests": [
+      { "input": [[1, 5, 3, 9, 2]], "output": 9 },
+      { "input": [[-10, -3, -50]], "output": -3 },
+      { "input": [[42]], "output": 42 },
+      { "input": [[0, -1, 1]], "output": 1 },
+      { "input": [[100, 20, 500, 30]], "output": 500 }
+    ]
+  },
+  {
+    "id": 4,
+    "title": "Palindrome Checker",
+    "difficulty": "easy",
+    "timeLimit": 300,
+    "description": "Write a function `solve(str)` that returns `true` if the string is a palindrome (reads the same backwards and forwards), and `false` otherwise. Ignore case sensitivity.",
+    "example": {
+      "input": "\"Racecar\"",
+      "output": "true"
+    },
+    "hints": [
+      "Convert the string to lowercase first using .toLowerCase().",
+      "Compare the normalized string to its reversed version."
+    ],
+    "starterCode": "function solve(str) {\n  // Your code here\n  \n}",
+    "tests": [
+      { "input": ["racecar"], "output": true },
+      { "input": ["Racecar"], "output": true },
+      { "input": ["hello"], "output": false },
+      { "input": ["madam"], "output": true },
+      { "input": ["noon"], "output": true },
+      { "input": ["duel"], "output": false }
+    ]
+  },
+  {
+    "id": 5,
+    "title": "Count Vowels",
+    "difficulty": "easy",
+    "timeLimit": 300,
+    "description": "Write a function `solve(str)` that counts and returns the number of vowels (a, e, i, o, u) in a given string (case-insensitive).",
+    "example": {
+      "input": "\"coding duel\"",
+      "output": "4"
+    },
+    "hints": [
+      "You can define a string 'aeiou' or a set of vowels.",
+      "Loop through each character and check if it is included in vowels."
+    ],
+    "starterCode": "function solve(str) {\n  // Your code here\n  \n}",
+    "tests": [
+      { "input": ["coding duel"], "output": 4 },
+      { "input": ["JavaScript"], "output": 3 },
+      { "input": ["xyz"], "output": 0 },
+      { "input": ["AEIOU"], "output": 5 },
+      { "input": [""], "output": 0 }
+    ]
+  },
+  {
+    "id": 6,
+    "title": "Two Sum",
+    "difficulty": "medium",
+    "timeLimit": 600,
+    "description": "Write a function `solve(nums, target)` that returns the indices of the two numbers in `nums` that add up to `target`. Each input has exactly one solution, and you may not use the same element twice. Return indices in ascending order `[i, j]`.",
+    "example": {
+      "input": "[2, 7, 11, 15], 9",
+      "output": "[0, 1]"
+    },
+    "hints": [
+      "A hash map / JavaScript object or Map can store numbers you've seen and their index: map[target - num].",
+      "This allows solving it in O(n) linear time."
+    ],
+    "starterCode": "function solve(nums, target) {\n  // Your code here\n  \n}",
+    "tests": [
+      { "input": [[2, 7, 11, 15], 9], "output": [0, 1] },
+      { "input": [[3, 2, 4], 6], "output": [1, 2] },
+      { "input": [[3, 3], 6], "output": [0, 1] },
+      { "input": [[1, 5, 8, 10, 14], 15], "output": [1, 3] },
+      { "input": [[-3, 4, 3, 90], 0], "output": [0, 2] }
+    ]
+  },
+  {
+    "id": 7,
+    "title": "Valid Parentheses",
+    "difficulty": "medium",
+    "timeLimit": 600,
+    "description": "Write a function `solve(s)` that determines if the input string containing brackets '(', ')', '{', '}', '[' and ']' is valid. An input string is valid if open brackets are closed by the same type of brackets in the correct order.",
+    "example": {
+      "input": "\"()[]{}\"",
+      "output": "true"
+    },
+    "hints": [
+      "Use a Stack (array with push and pop).",
+      "When encountering a closing bracket, check if it matches the top of the stack."
+    ],
+    "starterCode": "function solve(s) {\n  // Your code here\n  \n}",
+    "tests": [
+      { "input": ["()[]{}"], "output": true },
+      { "input": ["([{}])"], "output": true },
+      { "input": ["(]"], "output": false },
+      { "input": ["([)]"], "output": false },
+      { "input": ["{[]}"], "output": true },
+      { "input": ["]"], "output": false }
+    ]
+  },
+  {
+    "id": 8,
+    "title": "Array Chunking",
+    "difficulty": "medium",
+    "timeLimit": 600,
+    "description": "Write a function `solve(arr, size)` that splits an array into sub-arrays of maximum length `size`.",
+    "example": {
+      "input": "[1, 2, 3, 4, 5], 2",
+      "output": "[[1, 2], [3, 4], [5]]"
+    },
+    "hints": [
+      "You can increment your loop counter by `size` on each iteration.",
+      "Use `arr.slice(i, i + size)` to extract each chunk."
+    ],
+    "starterCode": "function solve(arr, size) {\n  // Your code here\n  \n}",
+    "tests": [
+      { "input": [[1, 2, 3, 4, 5], 2], "output": [[1, 2], [3, 4], [5]] },
+      { "input": [[1, 2, 3, 4], 2], "output": [[1, 2], [3, 4]] },
+      { "input": [[1, 2, 3], 1], "output": [[1], [2], [3]] },
+      { "input": [[1, 2, 3], 5], "output": [[1, 2, 3]] },
+      { "input": [[], 3], "output": [] }
+    ]
+  },
+  {
+    "id": 9,
+    "title": "FizzBuzz Array",
+    "difficulty": "medium",
+    "timeLimit": 600,
+    "description": "Write a function `solve(n)` that returns an array of string representations of numbers from 1 to `n`.\n- For multiples of 3, use \"Fizz\"\n- For multiples of 5, use \"Buzz\"\n- For multiples of both 3 and 5, use \"FizzBuzz\"\n- Otherwise, use the number as a string.",
+    "example": {
+      "input": "5",
+      "output": "[\"1\", \"2\", \"Fizz\", \"4\", \"Buzz\"]"
+    },
+    "hints": [
+      "Check `i % 15 === 0` (or both % 3 and % 5) first before checking individual 3 and 5.",
+      "Build an array using a loop from 1 to n."
+    ],
+    "starterCode": "function solve(n) {\n  // Your code here\n  \n}",
+    "tests": [
+      { "input": [3], "output": ["1", "2", "Fizz"] },
+      { "input": [5], "output": ["1", "2", "Fizz", "4", "Buzz"] },
+      { "input": [15], "output": ["1", "2", "Fizz", "4", "Buzz", "Fizz", "7", "8", "Fizz", "Buzz", "11", "Fizz", "13", "14", "FizzBuzz"] },
+      { "input": [1], "output": ["1"] }
+    ]
+  },
+  {
+    "id": 10,
+    "title": "Longest Substring Without Repeating Characters",
+    "difficulty": "hard",
+    "timeLimit": 900,
+    "description": "Write a function `solve(s)` that finds the length of the longest substring without duplicate characters.",
+    "example": {
+      "input": "\"abcabcbb\"",
+      "output": "3"
+    },
+    "hints": [
+      "Use a sliding window approach with two pointers `left` and `right`.",
+      "Store the last seen index of each character in a Map or object."
+    ],
+    "starterCode": "function solve(s) {\n  // Your code here\n  \n}",
+    "tests": [
+      { "input": ["abcabcbb"], "output": 3 },
+      { "input": ["bbbbb"], "output": 1 },
+      { "input": ["pwwkew"], "output": 3 },
+      { "input": [""], "output": 0 },
+      { "input": ["au"], "output": 2 },
+      { "input": ["dvdf"], "output": 3 }
+    ]
+  },
+  {
+    "id": 11,
+    "title": "Flatten Nested Array",
+    "difficulty": "hard",
+    "timeLimit": 900,
+    "description": "Write a function `solve(arr)` that flattens an arbitrarily deeply nested array of numbers into a single flat array without using `Array.prototype.flat`.",
+    "example": {
+      "input": "[1, [2, [3, [4]], 5]]",
+      "output": "[1, 2, 3, 4, 5]"
+    },
+    "hints": [
+      "You can solve this recursively or using an iterative stack.",
+      "Check `Array.isArray(element)` to decide whether to recurse or push to result."
+    ],
+    "starterCode": "function solve(arr) {\n  // Your code here\n  \n}",
+    "tests": [
+      { "input": [[1, [2, [3, [4]], 5]]], "output": [1, 2, 3, 4, 5] },
+      { "input": [[[1, 2], [3, 4]]], "output": [1, 2, 3, 4] },
+      { "input": [[1, 2, 3]], "output": [1, 2, 3] },
+      { "input": [[[[[42]]]]], "output": [42] },
+      { "input": [[]], "output": [] }
+    ]
+  }
+]

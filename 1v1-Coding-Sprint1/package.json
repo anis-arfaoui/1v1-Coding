@@ -1,0 +1,31 @@
+{
+  "name": "1v1-coding-duel-sprint1",
+  "version": "0.1.0",
+  "description": "1v1 Coding Duel — Sprint 1: Web Page UI & Layout Foundations",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "start": "node server.js",
+    "server": "node server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "lucide-react": "^0.477.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.3.3",
+    "@types/react": "^18.3.18",
+    "@types/react-dom": "^18.3.5",
+    "@vitejs/plugin-react": "^4.3.4",
+    "autoprefixer": "^10.6.1",
+    "postcss": "^8.5.30",
+    "tailwindcss": "^4.3.3",
+    "vite": "^6.2.0"
+  }
+}

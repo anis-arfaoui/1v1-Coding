@@ -1,0 +1,493 @@
+================================================================================
+                    1v1 CODING DUEL — AGILE 5-WEEK PROJECT PLAN
+         (Sprint-by-Sprint Execution Guide & 3-Person Agile Team Breakdown)
+================================================================================
+
+METHODOLOGY OVERVIEW (AGILE / SCRUM)
+--------------------------------------------------------------------------------
+Framework      : Agile Scrum adapted for a 5-week delivery cycle
+Sprint Length  : 1 Week per Sprint (5 Sprints total)
+Team Size      : 3 Cross-Functional Developers
+Scrum Artifacts: Product Backlog, Sprint Backlog, Potentially Shippable Increment
+Scrum Events   :
+  - Sprint Planning   : Monday morning (define sprint backlog and acceptance criteria)
+  - Daily Standup     : 10-minute daily check-in (What did I do? What will I do? Blockers?)
+  - Sprint Review/Demo: Friday afternoon (demonstrate working increment)
+  - Retrospective     : Friday late afternoon (continuous improvement)
+
+================================================================================
+                       5-WEEK SPRINT SUMMARY TABLE
+================================================================================
+
++--------+----------+------------------------------------+-----------------------------+
+| Week   | Sprint   | Main Goal / Focus                  | Key Deliverables (Increment)|
++--------+----------+------------------------------------+-----------------------------+
+| Week 1 | Sprint 1 | Web Page UI & Layout Foundations   | Responsive Home & Lobby UI, |
+|        |          | (Landing, Lobby, Navigation)       | Header, Dark gaming theme,  |
+|        |          |                                    | UI State Machine prototype  |
++--------+----------+------------------------------------+-----------------------------+
+| Week 2 | Sprint 2 | Code Frame & Editor Environment    | CodeMirror 6 IDE, Syntax    |
+|        |          | (IDE, Theme, Problem Frame)        | highlighting, Starter code  |
+|        |          |                                    | loader, Output panel frame  |
++--------+----------+------------------------------------+-----------------------------+
+| Week 3 | Sprint 3 | Connect Two Players (Networking,   | Express + Socket.IO server, |
+|        |          | Rooms, Matchmaking & Countdown)    | 6-character room codes,     |
+|        |          |                                    | Lobby sync, 3-2-1 countdown |
++--------+----------+------------------------------------+-----------------------------+
+| Week 4 | Sprint 4 | Challenges, Test & Run Sandbox,    | problems.json (11 tasks),   |
+|        |          | Authoritative Timer & Winner Win   | Web Worker 2s runner, Timer |
+|        |          |                                    | ticks, Hints, Winner referee|
++--------+----------+------------------------------------+-----------------------------+
+| Week 5 | Sprint 5 | Optimization, Automated E2E        | duel.test.js test suite,    |
+|        |          | Testing, Audio FX & Cloud Deploy   | Infinite loop hardening,    |
+|        |          |                                    | Web Audio API, Cloud deploy |
++--------+----------+------------------------------------+-----------------------------+
+
+
+================================================================================
+EVALUATION OF THIS SPRINT BREAKDOWN
+================================================================================
+Why this 5-week breakdown is highly effective in an Agile environment:
+1. Progressive Layering:
+   - Week 1 builds the user-facing web pages and wireframes (Visual prototype).
+   - Week 2 adds the developer workspace and code editing frame (Editor environment).
+   - Week 3 establishes the real-time multiplayer pipe connecting 2 players (Networking).
+   - Week 4 injects the challenges, execution sandbox, and game rules (Game mechanics).
+   - Week 5 polishes, tests, hardens, and ships the application live (Release & QA).
+2. Clear Increment at Every Sprint:
+   - Each sprint produces a testable, demonstrable milestone for stakeholder reviews.
+3. Decoupled Parallelism:
+   - Separating the code frame (Sprint 2) from networking (Sprint 3) allows the editor
+     to be perfected before wiring it up to WebSockets.
+
+
+================================================================================
+WEEK 1: SPRINT 1 — WEB PAGE UI & LAYOUT FOUNDATIONS
+================================================================================
+
+Sprint Goal:
+  Initialize the React 18 + Vite project, configure Tailwind CSS styling, design
+  the dark arcade gaming visual identity, and build the interactive page layouts
+  (Header, Home Screen, Lobby Screen) with mock navigation states.
+
+User Stories:
+  - US-1.1: As a player, I want an attractive landing page so that I can choose
+    to create a room or join a friend's room.
+  - US-1.2: As a player, I want to input my nickname and preferred challenge
+    difficulty (Any, Easy, Medium, Hard).
+  - US-1.3: As a host, I want a lobby page displaying a room code and a copy-link
+    button so that I can easily invite a friend.
+  - US-1.4: As a player joining via an invite link (`?join=CODE`), I want the room
+    code auto-filled on my screen.
+
+Tasks & Implementation:
+  1. Setup Vite + React 18 + Tailwind CSS v4 environment.
+  2. Implement global gaming styles in `src/index.css` (custom dark theme, scrollbars,
+     glow effects, Lucide icons).
+  3. Build `src/components/Header.jsx`:
+     - Logo branding ("1v1 Coding Duel"), room code badge, sound toggle button placeholder.
+  4. Build `src/components/HomeScreen.jsx`:
+     - Nickname input with `localStorage` persistence.
+     - "Create Match" card with difficulty selector (Any, Easy, Medium, Hard).
+     - "Join Match" card with 6-character room code input.
+     - URL query parameter parsing to pre-populate join code.
+     - Feature highlight cards (Real-time vs, Web Worker sandbox, Instant tests).
+  5. Build `src/components/LobbyScreen.jsx`:
+     - Visual cards for Player 1 (Host) and Player 2 (Waiting slot).
+     - Room code badge with 1-click "Copy Code" and "Copy Link" buttons.
+     - Animated pulse indicator: "Waiting for opponent to connect...".
+  6. Build top-level screen switcher in `src/App.jsx` (`'home'`, `'lobby'`).
+
+Deliverables / Increment:
+  A fully interactive, responsive frontend prototype running on `http://localhost:5173`
+  allowing page transitions between Home and Lobby with clipboard link copying.
+
+Definition of Done (Sprint 1):
+  [x] Modern dark arcade theme configured with Tailwind CSS.
+  [x] Home screen allows nickname entry and difficulty selection.
+  [x] Lobby screen displays room code with copy-to-clipboard functionality.
+  [x] Direct join links (`?join=XXXXXX`) correctly populate the input.
+  [x] Zero console errors; verified responsive across mobile and desktop.
+
+
+================================================================================
+WEEK 2: SPRINT 2 — CODE FRAME & EDITOR ENVIRONMENT
+================================================================================
+
+Sprint Goal:
+  Integrate CodeMirror 6 into the React application, create the full duel layout
+  frame (two-column split screen), render problem statement frames, and build the
+  bottom results/console output panel.
+
+User Stories:
+  - US-2.1: As a developer, I want a syntax-highlighted JavaScript editor with line
+    numbers, dark theme, and auto-closing brackets.
+  - US-2.2: As a player, I want to see the problem title, difficulty badge,
+    description, examples, and hints frame on the left side of my screen.
+  - US-2.3: As a player, I want a toolbar above the editor with a "Run & Test" button,
+    a "Reset Code" button, and keyboard shortcut indicators (`Ctrl + Enter`).
+  - US-2.4: As a player, I want an output panel below the editor with tabs for
+    "Test Results" and "Console Output".
+
+Tasks & Implementation:
+  1. Install CodeMirror 6 dependencies:
+     - `@uiw/react-codemirror`, `@codemirror/lang-javascript`, `@codemirror/theme-one-dark`.
+  2. Build `src/components/DuelScreen.jsx` frame:
+     - Two-column responsive desktop layout (Left: Problem briefing; Right: IDE & tests).
+  3. Build the Problem Briefing Frame (Left Column):
+     - Problem title, difficulty tag (Easy = Green, Medium = Amber, Hard = Rose).
+     - Formatted problem description card with code font styling.
+     - Example card displaying sample input parameters and expected output.
+     - Hints accordion container (showing unlocked hints or locked timer badges).
+  4. Build the Code Editor Frame (Right Column):
+     - CodeMirror 6 setup with JavaScript language extension and One Dark theme.
+     - Line numbers, active line highlight, bracket matching, tab indentation.
+     - Starter code loading mechanism (`problem.starterCode`).
+     - Reset code action with confirmation prompt.
+  5. Build the Output & Results Frame:
+     - Tabbed footer: "Test Results" tab and "Console Output" tab.
+     - Test case list container with mock test rows (Input, Expected, Actual, Status).
+     - Console log viewer with monospace font and dark terminal background.
+  6. Implement keyboard shortcut listener (`Ctrl + Enter` / `Cmd + Enter`) to trigger
+     the Run action.
+
+Deliverables / Increment:
+  A polished, interactive IDE frame where users can type JavaScript code, inspect
+  mock problem specifications, toggle test/console tabs, and trigger run shortcuts.
+
+Definition of Done (Sprint 2):
+  [x] CodeMirror 6 editor renders cleanly with One Dark syntax highlighting.
+  [x] Left-side problem frame renders title, difficulty, descriptions, and examples.
+  [x] Toolbar buttons (Run & Test, Reset) and shortcuts (`Ctrl + Enter`) work.
+  [x] Tabbed output panel toggles smoothly between Test Cases and Console Output.
+
+
+================================================================================
+WEEK 3: SPRINT 3 — CONNECT TWO PLAYERS (NETWORKING, ROOMS & COUNTDOWN)
+================================================================================
+
+Sprint Goal:
+  Build the Node.js + Express + Socket.IO backend, implement the authoritative room
+  matchmaking system with 6-character room codes, sync real-time player presence,
+  and orchestrate the synchronized 3-2-1 countdown transition.
+
+User Stories:
+  - US-3.1: As Player 1, I want the server to generate a unique 6-character room
+    code when I create a match.
+  - US-3.2: As Player 2, I want to enter the 6-character code and instantly join
+    Player 1's lobby.
+  - US-3.3: As a player in the lobby, I want to see when the other player connects
+    or disconnects in real time without refreshing.
+  - US-3.4: As both players, once two players are connected in the lobby, I want
+    an animated 3-2-1-DUEL countdown to start automatically on both screens.
+
+Tasks & Implementation:
+  1. Backend Server Setup (`server.js`):
+     - Express app with CORS middleware and HTTP server.
+     - Socket.IO initialization with WebSocket support.
+     - In-memory `rooms = new Map()` state container.
+  2. Room Code Generator (`generateRoomCode`):
+     - Generate collision-free 6-character code from `ABCDEFGHJKLMNPQRSTUVWXYZ23456789`.
+  3. Socket Event System:
+     - `create_room`: Accepts `{ nickname, difficulty }`. Creates room, joins socket
+       channel `socket.join(code)`, emits `room_created`.
+     - `join_room`: Accepts `{ roomCode, nickname }`.
+       Validates room exists, has < 2 players, and is in `'waiting'` state.
+       Emits `error_message` if invalid.
+       If valid: adds player 2, joins channel, emits `room_joined` to joiner and
+       `player_joined` to room.
+     - `disconnect`: Detects socket disconnection; cleans up empty rooms or notifies
+       the remaining player.
+  4. Frontend Socket Integration (`src/utils/socket.js`, `src/App.jsx`):
+     - Connect Socket.IO client to backend server origin.
+     - Wire `create_room` and `join_room` actions to HomeScreen buttons.
+     - Update `LobbyScreen` live when `player_joined` arrives from server.
+  5. Synchronized Countdown System:
+     - When Player 2 joins, backend triggers `startCountdown(room)`.
+     - Server runs 1-second interval broadcasting `countdown_tick` ({ seconds: 3, 2, 1 }).
+     - Build `src/components/CountdownOverlay.jsx`:
+       * Fullscreen dramatic animated overlay displaying "3", "2", "1", "DUEL!".
+     - When countdown hits 0, server switches room status to `'in_game'` and emits
+       `game_start` to both players, transitioning their screens to `DuelScreen`.
+
+Deliverables / Increment:
+  Two separate browser windows can create a room, join with a code, see each other
+  in the lobby, and trigger a simultaneous 3-2-1-DUEL countdown that opens the duel.
+
+Definition of Done (Sprint 3):
+  [x] Backend runs Express + Socket.IO on `http://localhost:3000`.
+  [x] 6-character room codes generate without duplicates or ambiguous characters.
+  [x] Real-time lobby sync connects Player 1 and Player 2 reliably.
+  [x] Error messages display when entering invalid or full room codes.
+  [x] 3-second animated countdown starts synchronously on both screens.
+
+
+================================================================================
+WEEK 4: SPRINT 4 — CHALLENGES, TEST & RUN, TIMER & WINNER REFEREE
+================================================================================
+
+Sprint Goal:
+  Build the problem dataset (`problems.json`), implement the isolated Web Worker
+  execution sandbox with 2000ms safety timeout, establish the server-authoritative
+  timer and hint dispatcher, track live opponent progress, and implement the winner
+  referee and Game Over / Rematch modal.
+
+User Stories:
+  - US-4.1: As a player, I want to receive a real JavaScript problem from the problem
+    bank with starter code and test cases.
+  - US-4.2: As a player, I want to click "Run & Test" and safely execute my code
+    in an isolated Web Worker without freezing my browser on infinite loops.
+  - US-4.3: As both players, I want a server-controlled countdown timer and automatic
+    hints unlocking at 1/3 and 2/3 of match duration.
+  - US-4.4: As a player, I want to see my opponent's live progress bar update when
+    they pass tests.
+  - US-4.5: As a player, the first person to pass 100% of test cases should win
+    immediately with celebration confetti; if time runs out, it's a draw; if an
+    opponent disconnects, I win by forfeit.
+  - US-4.6: As both players, I want a "Request Rematch" button to immediately play
+    another challenge together.
+
+Tasks & Implementation:
+  1. Problem Dataset (`problems.json`):
+     - Create 11 coding challenges across Easy, Medium, and Hard difficulties.
+     - Include `id`, `title`, `difficulty`, `timeLimit`, `description`, `example`,
+       `hints` (array), `starterCode`, and `tests` (input/output array).
+  2. Web Worker Execution Sandbox (`public/runner.js`):
+     - Create worker thread to isolate code execution.
+     - Implement `isDeepEqual(a, b)` for deep value comparison.
+     - Intercept `console.log` statements to capture user debugging output.
+     - Measure per-test execution time in milliseconds (`performance.now()`).
+     - Deep clone inputs so user code cannot mutate test fixtures.
+  3. Timeout Guard (`src/utils/codeRunner.js`):
+     - Spawn worker with strict 2000ms safety timeout (`setTimeout`).
+     - Terminate worker (`worker.terminate()`) if code hangs (e.g. `while(true)`),
+       returning an execution timeout error.
+  4. Authoritative Server Timer & Hints (`server.js`):
+     - In `startGame(room)`: select problem matching room difficulty, start 1s interval.
+     - Emit `timer_tick` ({ timeRemaining, totalTime }).
+     - Unlock Hint 1 at 2/3 time remaining (1/3 elapsed); emit `hint_unlocked`.
+     - Unlock Hint 2 at 1/3 time remaining (2/3 elapsed); emit `hint_unlocked`.
+     - When time hits 0: emit `game_over` with `result: 'draw'`.
+  5. Live Opponent Progress Broadcast:
+     - On code run: client emits `player_progress` ({ roomCode, testsPassed, totalTests }).
+     - Server relays `opponent_progress` to the other player.
+     - DuelScreen renders live animated opponent progress bar.
+  6. Authoritative Winner Detection & Disconnection Referee:
+     - When client passes 100% of tests, emit `solved` event.
+     - Server single-threaded event loop locks the win atomically for the first
+       valid submission: marks room `game_over`, clears timer, broadcasts `game_over`
+       ({ result: 'win', winnerNickname, elapsedSeconds }).
+     - If a player disconnects mid-game: award immediate forfeit victory to remaining player.
+  7. Game Over Modal & Rematch Flow (`GameOverModal.jsx`):
+     - Outcome banner (Victory, Defeat, Draw, Forfeit).
+     - Confetti explosion using `canvas-confetti` for the winner.
+     - "Request Rematch" button emitting `play_again`.
+     - When both players request rematch, backend automatically picks a new problem
+       and triggers a fresh 3-second countdown.
+
+Deliverables / Increment:
+  A fully playable multiplayer coding duel game where two players receive challenges,
+  write code, execute tests safely, receive hints, race against the timer, and
+  experience instant win/draw/forfeit/rematch resolution.
+
+Definition of Done (Sprint 4):
+  [x] 11 problems with verified tests loaded from `problems.json`.
+  [x] Web Worker executes code safely and kills infinite loops after 2 seconds.
+  [x] Server controls timer ticks and unlocks hints at 1/3 and 2/3 elapsed time.
+  [x] Opponent progress bar updates live across sockets.
+  [x] First player to pass all tests wins; timeout results in a draw; disconnects forfeit.
+  [x] Game Over modal renders outcome and supports rematching with a new problem.
+
+
+================================================================================
+WEEK 5: SPRINT 5 — OPTIMIZATION, AUTOMATED E2E TESTING, AUDIO & DEPLOYMENT
+================================================================================
+
+Sprint Goal:
+  Implement an automated end-to-end integration test suite, harden edge cases
+  and memory cleanup, synthesize retro 8-bit sound effects using the Web Audio API,
+  optimize the production build, and deploy the application live to cloud hosting.
+
+User Stories:
+  - US-5.1: As a developer, I want an automated test suite verifying problem schemas,
+    code execution, and dual-client socket flows.
+  - US-5.2: As a player, I want synthesized retro sound effects for countdowns,
+    runs, hints, victory, and defeat with a mute toggle.
+  - US-5.3: As a user, I want the web app to load quickly, handle bad inputs
+    gracefully, and never crash.
+  - US-5.4: As a player, I want the game hosted live on the web so I can duel
+    my friends on different devices anywhere in the world.
+
+Tasks & Implementation:
+  1. Automated Integration Test Suite (`test/duel.test.js`):
+     - Problem schema validation (check all 11 problems have required fields).
+     - Test runner simulation: verify correct code passes and incorrect code fails.
+     - Dual-client Socket.IO integration test:
+       * Client A creates room; Client B joins room.
+       * Verify countdown tick and game start events.
+       * Client A emits progress -> verify Client B receives opponent progress.
+       * Client A emits solved -> verify game over win is broadcast.
+     - Add `npm test` script to `package.json`.
+  2. Edge Case Hardening & Defenses:
+     - Sanitize nicknames (trim whitespace, fallback to "Player 1" / "Player 2").
+     - Normalize room codes to uppercase and strip spaces.
+     - Guard against duplicate submissions after match completion.
+     - Room cleanup: clear all intervals (`clearInterval`) on game over or disconnect
+       to eliminate server memory leaks.
+     - Deep clone inputs in runner to prevent test fixture corruption.
+  3. Synthesized Retro Audio Engine (`src/utils/audio.js`):
+     - Pure Web Audio API oscillators (sine, square, triangle wave synthesis).
+     - Sound effects: Countdown beeps (440Hz -> 880Hz), game start fanfare, test pass chime,
+       test fail buzz, hint unlock chime, victory fanfare, and defeat minor chords.
+     - Audio mute toggle in Header with persistent `localStorage` preference.
+  4. Production Build & SPA Fallback Serving:
+     - Configure Vite production bundling to `dist/`.
+     - Configure Express in `server.js` to serve static assets from `dist/`.
+     - Implement SPA wildcard fallback (`app.get('*', ...)`) to serve `index.html`.
+     - Add `/api/health` monitoring route returning server status and active rooms.
+  5. Cloud Deployment (Render / Railway):
+     - Set up cloud web service with Node.js environment.
+     - Configure build command: `npm install && npm run build`.
+     - Configure start command: `npm start`.
+     - Test live WebSocket connectivity between mobile and desktop devices.
+  6. Final Documentation & Presentation:
+     - Update `README.md` with architecture diagrams, play guide, and deployment steps.
+     - Prepare demo script for final sprint presentation.
+
+Deliverables / Increment:
+  A production-ready, fully tested, hardened, and sound-equipped web application
+  deployed live online and playable across devices.
+
+Definition of Done (Sprint 5):
+  [x] Automated test suite in `test/duel.test.js` passes 100%.
+  [x] Infinite loops, bad inputs, and disconnections handled gracefully.
+  [x] Synthesized Web Audio API sound effects work with mute toggle.
+  [x] Production build passes cleanly with zero warnings or errors.
+  [x] Application is deployed live on Render / Railway and playable over the internet.
+  [x] Complete `README.md` documentation and presentation demo ready.
+
+
+================================================================================
+AGILE 3-PERSON TEAM ROLE BREAKDOWN & RESPONSIBILITY MATRIX
+================================================================================
+
+To maximize efficiency and maintain clear cross-functional ownership, the work
+is divided across 3 specialized Agile team roles:
+
+--------------------------------------------------------------------------------
+ROLE 1: FRONTEND & UI/UX SPECIALIST (PERSON 1)
+--------------------------------------------------------------------------------
+Primary Focus: Visual design, component architecture, user flow, and animations.
+
+- Sprint 1 (Week 1):
+  * Initialize Vite + React project; configure Tailwind CSS v4 and typography.
+  * Build `Header.jsx`, `HomeScreen.jsx` (nickname input, difficulty selector, cards).
+  * Build `LobbyScreen.jsx` (player cards, room code badge, copy buttons, direct links).
+  * Setup top-level screen switcher in `App.jsx`.
+
+- Sprint 2 (Week 2):
+  * Design and build the 2-column `DuelScreen.jsx` frame.
+  * Build problem description presentation card, examples card, and hints frame.
+  * Build the tabbed results container (Test Cases tab & Console Output tab).
+
+- Sprint 3 (Week 3):
+  * Build `CountdownOverlay.jsx` with animated 3-2-1-DUEL typography.
+  * Connect frontend UI buttons to Socket.IO actions (`create_room`, `join_room`).
+  * Integrate real-time player list updates into the Lobby UI.
+
+- Sprint 4 (Week 4):
+  * Build `GameOverModal.jsx` (Victory, Defeat, Draw, Forfeit states).
+  * Integrate `canvas-confetti` celebration animations for the winner.
+  * Implement "Request Rematch" UI and ready indicator buttons.
+  * Render real-time animated opponent progress bar in `DuelScreen.jsx`.
+
+- Sprint 5 (Week 5):
+  * Mobile and tablet responsive polish; theme consistency check.
+  * Visual polish: glowing borders, transitions, active button states.
+  * Frontend presentation slides and UI demo walkthrough.
+
+--------------------------------------------------------------------------------
+ROLE 2: BACKEND & REAL-TIME NETWORKING ARCHITECT (PERSON 2)
+--------------------------------------------------------------------------------
+Primary Focus: Server architecture, Socket.IO communication, room state, and DevOps.
+
+- Sprint 1 (Week 1):
+  * Setup Node.js backend structure with ES modules (`server.js`).
+  * Install and configure Express, HTTP server, and CORS middleware.
+  * Design in-memory room data model (`rooms = new Map()`).
+
+- Sprint 2 (Week 2):
+  * Implement CodeMirror 6 integration into React (`@uiw/react-codemirror`).
+  * Configure One Dark theme, line numbers, JavaScript syntax mode, and shortcuts.
+  * Implement starter code reset and keyboard shortcut bindings (`Ctrl + Enter`).
+
+- Sprint 3 (Week 3):
+  * Implement 6-character room code generator (`generateRoomCode`).
+  * Implement socket event handlers: `create_room`, `join_room`, `disconnect`.
+  * Build server-side countdown orchestrator (`startCountdown`, `countdown_tick`).
+  * Ensure room capacity (max 2 players) and error messages for invalid codes.
+
+- Sprint 4 (Week 4):
+  * Implement server-authoritative match timer (`setInterval` 1s ticks).
+  * Build hint scheduler emitting `hint_unlocked` at 1/3 and 2/3 elapsed time.
+  * Build winner referee: atomically lock win on first `solved` event.
+  * Handle timeout draws and mid-game disconnection forfeit victories.
+  * Implement rematch state manager (`play_again`, `rematch_update`).
+
+- Sprint 5 (Week 5):
+  * Setup production static serving in Express (`dist/` and SPA fallback `*`).
+  * Implement `/api/health` monitoring endpoint.
+  * Configure cloud deployment on Render / Railway (build & start commands).
+  * Verify cloud WebSocket persistence and cross-network latency.
+
+--------------------------------------------------------------------------------
+ROLE 3: EXECUTION SANDBOX, CHALLENGES & QA/AUDIO SPECIALIST (PERSON 3)
+--------------------------------------------------------------------------------
+Primary Focus: Code execution security, problem bank, Web Audio API, and automated testing.
+
+- Sprint 1 (Week 1):
+  * Research and define problem specifications (inputs, outputs, edge cases).
+  * Setup URL query parameter parser (`?join=CODE`) and `localStorage` utilities.
+  * Setup initial git repository branches, PR guidelines, and team Agile board (Trello/GitHub Projects).
+
+- Sprint 2 (Week 2):
+  * Build Web Worker execution runner (`public/runner.js`).
+  * Implement `isDeepEqual(a, b)` for deep array/object comparison.
+  * Build console.log interceptor to capture debugging output inside the worker.
+  * Implement 2000ms safety timeout wrapper (`codeRunner.js`) to kill infinite loops.
+
+- Sprint 3 (Week 3):
+  * Author first 5 challenges in `problems.json` with full test suites.
+  * Wire up socket client singleton (`src/utils/socket.js`).
+  * Implement live progress event dispatching (`player_progress` on test runs).
+
+- Sprint 4 (Week 4):
+  * Author remaining 6 challenges in `problems.json` (11 total: Easy, Medium, Hard).
+  * Validate all test cases against expected solutions to ensure 100% accuracy.
+  * Deep clone test inputs inside worker to prevent test fixture mutation bugs.
+  * Connect test results viewer with actual execution data (ms, actual vs expected).
+
+- Sprint 5 (Week 5):
+  * Build synthesized Web Audio API sound engine in `src/utils/audio.js` (beeps, fanfares, buzzers).
+  * Build automated end-to-end integration test suite in `test/duel.test.js`.
+  * Validate automated tests with `npm test`.
+  * Edge case stress testing (simultaneous submissions, infinite loops, tab closure).
+
+
+================================================================================
+WEEKLY AGILE CEREMONY SCHEDULE FOR THE 3-PERSON TEAM
+================================================================================
+
+Day             Activity                    Focus
+--------------------------------------------------------------------------------
+Monday 09:30    Sprint Planning             Review Sprint backlog, estimate user
+                                            stories, assign tasks across Person 1,
+                                            Person 2, and Person 3.
+Tue - Thu 09:30 Daily Scrum (10 mins)       1. What did I complete yesterday?
+                                            2. What will I work on today?
+                                            3. Are there any blockers / dependencies?
+Friday 15:00    Sprint Demo & Review        Demonstrate the working sprint increment
+                                            (live app running in browser).
+Friday 16:00    Sprint Retrospective        What went well? What caused friction?
+                                            What action items do we commit to for next week?
+================================================================================
