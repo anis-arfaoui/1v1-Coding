@@ -1,13 +1,17 @@
+/**
+ * Lobby Screen Component (Multiplayer Waiting Room)
+ * Responsible Member: Djerbouaa Zakaria (Frontend Developer)
+ */
+
 import React, { useState } from 'react';
-import { Copy, Check, Clock, Share2, Sparkles, UserPlus, UserMinus } from 'lucide-react';
+import { Copy, Check, Clock, Share2, Sparkles, CheckCircle2, Users, ArrowLeft } from 'lucide-react';
 
 export default function LobbyScreen({
   roomCode,
   difficulty,
   players,
   myId,
-  onLeaveRoom,
-  onSimulateOpponentToggle
+  onLeaveRoom
 }) {
   const [copiedCode, setCopiedCode] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
@@ -27,6 +31,7 @@ export default function LobbyScreen({
 
   const hostPlayer = players[0];
   const guestPlayer = players[1];
+  const hasBothPlayers = players.length >= 2;
 
   const difficultyLabels = {
     any: '🎲 Any Difficulty',
@@ -37,21 +42,25 @@ export default function LobbyScreen({
 
   return (
     <div className="flex min-h-[calc(100vh-65px)] flex-col items-center justify-center px-4 py-8 sm:px-6">
-      <div className="w-full max-w-xl glass-panel rounded-3xl border border-slate-800 p-6 sm:p-8 shadow-2xl text-center">
+      <div className="w-full max-w-xl glass-panel rounded-3xl border border-slate-800 p-6 sm:p-8 shadow-2xl text-center animate-fadeIn">
+        
         {/* Header Tag */}
         <div className="inline-flex items-center space-x-2 rounded-full bg-cyan-500/10 border border-cyan-500/20 px-3 py-1 text-xs font-semibold text-cyan-400 mb-4">
           <Sparkles className="h-3.5 w-3.5" />
-          <span>Match Lobby (Sprint 1 Prototype)</span>
+          <span>Multiplayer Match Lobby (Sprint 1)</span>
         </div>
 
+        {/* Lobby Headline (US-03) */}
         <h2 className="text-2xl sm:text-3xl font-extrabold text-white mb-2">
-          {guestPlayer ? 'Opponent Connected!' : 'Waiting for Opponent'}
+          {hasBothPlayers ? 'Opponent Connected!' : 'Waiting for Opponent'}
         </h2>
         <p className="text-xs sm:text-sm text-slate-400 mb-6">
-          Share this room code with your friend. In Sprint 3, the countdown starts automatically once both players are connected!
+          {hasBothPlayers
+            ? 'Both players are synchronized via real-time Socket.IO room events!'
+            : 'Share this 6-character room code with your opponent to connect.'}
         </p>
 
-        {/* Room Code Display Box */}
+        {/* Room Code Display Box (US-01) */}
         <div className="relative mb-6 rounded-2xl bg-slate-900/90 border-2 border-dashed border-cyan-500/40 p-5 shadow-inner">
           <div className="text-[11px] font-bold uppercase tracking-widest text-slate-400 mb-1">
             Room Code
@@ -91,15 +100,15 @@ export default function LobbyScreen({
         <div className="mb-6 inline-flex items-center space-x-2 rounded-xl bg-slate-900 border border-slate-800 px-3 py-1.5 text-xs text-slate-300">
           <Clock className="h-3.5 w-3.5 text-amber-400" />
           <span>
-            Target Setting:{' '}
+            Match Difficulty:{' '}
             <strong className="text-white">
               {difficultyLabels[difficulty] || difficulty}
             </strong>
           </span>
         </div>
 
-        {/* Players Card Grid (US-1.3 & Sprint 1 Task 5) */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+        {/* Players Card Grid (US-03) */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
           {/* Host Card (Player 1) */}
           <div className="relative rounded-2xl bg-slate-900/80 border border-slate-800 p-4 text-left flex items-center space-x-3 shadow-md">
             <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-cyan-500/15 text-cyan-400 border border-cyan-500/30 font-bold text-lg">
@@ -110,8 +119,11 @@ export default function LobbyScreen({
                 <span className="text-sm font-bold text-white truncate">
                   {hostPlayer ? hostPlayer.nickname : 'Host'}
                 </span>
-                {hostPlayer && (!myId || hostPlayer.id === myId) && (
-                  <span className="text-[10px] px-1.5 py-0.2 rounded bg-cyan-500/20 text-cyan-400 font-semibold">
+                <span className="text-[10px] px-1.5 py-0.5 rounded bg-cyan-500/20 text-cyan-400 font-semibold border border-cyan-500/30">
+                  Host
+                </span>
+                {hostPlayer && hostPlayer.id === myId && (
+                  <span className="text-[10px] px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-300 font-semibold">
                     You
                   </span>
                 )}
@@ -147,8 +159,11 @@ export default function LobbyScreen({
                     <span className="text-sm font-bold text-white truncate">
                       {guestPlayer.nickname}
                     </span>
+                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-400 font-semibold border border-purple-500/30">
+                      Guest
+                    </span>
                     {guestPlayer.id === myId && (
-                      <span className="text-[10px] px-1.5 py-0.2 rounded bg-purple-500/20 text-purple-400 font-semibold">
+                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-300 font-semibold">
                         You
                       </span>
                     )}
@@ -171,37 +186,28 @@ export default function LobbyScreen({
           </div>
         </div>
 
-        {/* Prototype Testing Helper: Toggle Opponent Join Simulation */}
-        {onSimulateOpponentToggle && (
-          <div className="mb-6 p-3 rounded-xl bg-slate-900/50 border border-slate-800/80 flex items-center justify-between">
-            <span className="text-xs text-slate-400">
-              Sprint 1 Prototype Demo Tool:
-            </span>
-            <button
-              onClick={onSimulateOpponentToggle}
-              className="inline-flex items-center space-x-1.5 text-xs font-semibold px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-cyan-400 border border-slate-700 transition-all cursor-pointer"
-            >
-              {guestPlayer ? (
-                <>
-                  <UserMinus className="h-3 w-3 text-rose-400" />
-                  <span>Disconnect Opponent</span>
-                </>
-              ) : (
-                <>
-                  <UserPlus className="h-3 w-3 text-emerald-400" />
-                  <span>Simulate Opponent Joined</span>
-                </>
-              )}
-            </button>
-          </div>
-        )}
+        {/* Status notification */}
+        <div className="mb-6">
+          {hasBothPlayers ? (
+            <div className="flex items-center justify-center space-x-2 rounded-xl bg-emerald-500/10 border border-emerald-500/30 p-3 text-xs text-emerald-300 font-medium animate-fadeIn">
+              <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-400" />
+              <span>Both players connected! Shared match state established.</span>
+            </div>
+          ) : (
+            <div className="flex items-center justify-center space-x-2 rounded-xl bg-blue-500/10 border border-blue-500/20 p-3 text-xs text-blue-300 font-medium">
+              <Users className="h-4 w-4 shrink-0 text-cyan-400" />
+              <span>Open a second tab or share the direct link to test real-time room joining!</span>
+            </div>
+          )}
+        </div>
 
         {/* Leave Room action */}
         <button
           onClick={onLeaveRoom}
-          className="text-xs text-slate-500 hover:text-rose-400 transition-colors font-medium cursor-pointer"
+          className="inline-flex items-center space-x-1.5 text-xs text-slate-500 hover:text-rose-400 transition-colors font-medium cursor-pointer"
         >
-          Cancel and return to home
+          <ArrowLeft className="h-3.5 w-3.5" />
+          <span>Cancel and return to home</span>
         </button>
       </div>
     </div>

@@ -1,9 +1,18 @@
+/**
+ * Main Application Server (Express + Socket.IO)
+ * Responsible Member: Brik Djalel (Backend Developer)
+ */
+
 import express from 'express';
 import http from 'http';
+import { Server } from 'socket.io';
 import cors from 'cors';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+
+import { rooms, getRoom } from './server/rooms.js';
+import { registerSocketHandlers } from './server/socketHandlers.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -12,139 +21,85 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// In-memory room data model (Sprint 1 Architecture)
-// Map<roomCode, { code, difficulty, status, players: Array<{ id, nickname, isHost }> }>
-const rooms = new Map();
-
-// Helper: 6-character room code generator (disambiguated characters)
-function generateRoomCode() {
-  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-  let code = '';
-  do {
-    code = '';
-    for (let i = 0; i < 6; i++) {
-      code += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-  } while (rooms.has(code));
-  return code;
+// Serve static frontend build from dist
+const distPath = path.join(__dirname, 'dist');
+if (fs.existsSync(distPath)) {
+  app.use(express.static(distPath));
 }
 
-// REST API Routes (Sprint 1 Backend Foundations)
-
-// Health and monitoring check
+// REST Health Check & Inspection Routes
 app.get('/api/health', (req, res) => {
   res.json({
     status: 'ok',
-    sprint: 'Sprint 1 — Web Page UI & Layout Foundations',
+    sprint: 'Sprint 1 — Foundation & Multiplayer Rooms',
     activeRooms: rooms.size
   });
 });
 
-// Create room
-app.post('/api/rooms', (req, res) => {
-  const { nickname, difficulty } = req.body;
-  const cleanNick = (nickname || '').trim() || 'Player 1';
-  const code = generateRoomCode();
-
-  const room = {
-    code,
-    difficulty: difficulty || 'any',
-    status: 'waiting',
-    createdAt: new Date().toISOString(),
-    players: [
-      {
-        id: 'host_' + Math.random().toString(36).substring(2, 9),
-        nickname: cleanNick,
-        isHost: true
-      }
-    ]
-  };
-
-  rooms.set(code, room);
-  console.log(`[Sprint 1 Server] Room created: ${code} by ${cleanNick}`);
-
-  res.status(201).json({
-    roomCode: code,
-    difficulty: room.difficulty,
-    players: room.players
-  });
-});
-
-// Get room details
 app.get('/api/rooms/:code', (req, res) => {
-  const code = (req.params.code || '').toUpperCase();
-  const room = rooms.get(code);
+  const code = (req.params.code || '').trim().toUpperCase();
+  const room = getRoom(code);
 
   if (!room) {
-    return res.status(404).json({ error: `Room ${code} not found.` });
+    return res.status(404).json({ error: `Room "${code}" not found.` });
   }
 
   res.json({
-    roomCode: room.code,
+    code: room.code,
     difficulty: room.difficulty,
     status: room.status,
-    players: room.players
+    createdAt: room.createdAt,
+    playerCount: room.players.length,
+    players: room.players.map((p) => ({
+      nickname: p.nickname,
+      isHost: p.isHost
+    }))
   });
 });
 
-// Join room
-app.post('/api/rooms/:code/join', (req, res) => {
-  const code = (req.params.code || '').toUpperCase();
-  const { nickname } = req.body;
-  const cleanNick = (nickname || '').trim() || 'Player 2';
-
-  const room = rooms.get(code);
-  if (!room) {
-    return res.status(404).json({ error: `Room ${code} not found.` });
-  }
-
-  if (room.players.length >= 2) {
-    return res.status(400).json({ error: `Room ${code} is already full.` });
-  }
-
-  const newPlayer = {
-    id: 'guest_' + Math.random().toString(36).substring(2, 9),
-    nickname: cleanNick,
-    isHost: false
-  };
-
-  room.players.push(newPlayer);
-  console.log(`[Sprint 1 Server] Player ${cleanNick} joined room: ${code}`);
-
-  res.json({
-    roomCode: room.code,
-    difficulty: room.difficulty,
-    players: room.players
-  });
-});
-
-// Serve static assets from 'dist' if built
-const distPath = path.join(__dirname, 'dist');
-const publicPath = path.join(__dirname, 'public');
-
-if (fs.existsSync(distPath)) {
-  app.use(express.static(distPath));
-}
-if (fs.existsSync(publicPath)) {
-  app.use(express.static(publicPath));
-}
-
-// Fallback to index.html for SPA client-side routing
+// Fallback route for SPA
 app.get('*', (req, res) => {
-  const indexPath = fs.existsSync(path.join(distPath, 'index.html'))
-    ? path.join(distPath, 'index.html')
-    : path.join(publicPath, 'index.html');
-
+  const indexPath = path.join(distPath, 'index.html');
   if (fs.existsSync(indexPath)) {
     res.sendFile(indexPath);
   } else {
-    res.send('1v1 Coding Duel Sprint 1 Server is running. Run `npm run build` or use `npm run dev` to access the Vite frontend.');
+    res.send(`
+      <!DOCTYPE html>
+      <html>
+        <head><title>1v1 Coding Duel — Sprint 1</title></head>
+        <body style="font-family: sans-serif; background: #080c14; color: #f8fafc; padding: 40px; text-align: center;">
+          <h1 style="color: #38bdf8;">1v1 Coding Duel — Sprint 1 Server Running</h1>
+          <p>The backend Socket.IO & Express server is active on port ${process.env.PORT || 3000}.</p>
+          <p>Run <code>npm run build</code> to compile the frontend, or <code>npm run dev</code> for Vite dev server.</p>
+        </body>
+      </html>
+    `);
   }
 });
 
 const server = http.createServer(app);
-const PORT = process.env.PORT || 3000;
-
-server.listen(PORT, () => {
-  console.log(`⚔️  1v1 Coding Duel (Sprint 1) server running on http://localhost:${PORT}`);
+const io = new Server(server, {
+  cors: {
+    origin: '*',
+    methods: ['GET', 'POST']
+  }
 });
+
+// Socket.IO Connection Entrypoint
+io.on('connection', (socket) => {
+  registerSocketHandlers(io, socket);
+});
+
+const PORT = process.env.PORT || 3000;
+if (process.env.NODE_ENV !== 'test') {
+  server.listen(PORT, () => {
+    console.log(`=======================================================`);
+    console.log(`  ⚔️ 1v1 Coding Duel — Sprint 1 Server Running!`);
+    console.log(`  Port: http://localhost:${PORT}`);
+    console.log(`  Sprint Goal: Foundation & Multiplayer Rooms`);
+    console.log(`  Backend Owner: Brik Djalel`);
+    console.log(`=======================================================`);
+  });
+}
+
+export { app, server, io };

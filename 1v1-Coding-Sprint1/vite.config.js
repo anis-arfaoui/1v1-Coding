@@ -2,6 +2,10 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 
+/**
+ * Vite Configuration
+ * Responsible Member: Djerbouaa Zakaria (Frontend Developer)
+ */
 export default defineConfig({
   plugins: [
     tailwindcss(),
@@ -10,6 +14,10 @@ export default defineConfig({
   server: {
     port: 5173,
     proxy: {
+      '/socket.io': {
+        target: 'http://localhost:3000',
+        ws: true
+      },
       '/api': 'http://localhost:3000'
     }
   },

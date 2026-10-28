@@ -1,7 +1,7 @@
 {
   "name": "1v1-coding-duel-sprint1",
-  "version": "0.1.0",
-  "description": "1v1 Coding Duel — Sprint 1: Web Page UI & Layout Foundations",
+  "version": "1.0.0",
+  "description": "1v1 Coding Duel — Sprint 1: Foundation and Multiplayer Rooms",
   "main": "server.js",
   "type": "module",
   "scripts": {
@@ -9,14 +9,17 @@
     "build": "vite build",
     "preview": "vite preview",
     "start": "node server.js",
-    "server": "node server.js"
+    "server": "node server.js",
+    "test": "node test/sprint1.test.js"
   },
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.21.2",
     "lucide-react": "^0.477.0",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.3.3",
